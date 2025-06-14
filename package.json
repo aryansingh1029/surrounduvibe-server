@@ -1,0 +1,22 @@
+{
+  "name": "surrounduvibe-backend",
+  "version": "1.0.0",
+  "description": "Backend for SurroundUvibe using Express and Socket.IO",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "socket.io",
+    "express",
+    "sync",
+    "audio",
+    "surrounduvibe"
+  ],
+  "author": "Krishna",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  }
+}

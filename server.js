@@ -7,9 +7,11 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
+// Create upload directory if not exists
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
+// Multer setup
 const storage = multer.diskStorage({
   destination: (_, __, cb) => cb(null, uploadDir),
   filename: (_, file, cb) => {
@@ -20,17 +22,22 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Serve static and uploaded files
 app.use(express.static(__dirname));
 app.use('/uploads', express.static(uploadDir));
+
+// Basic test route to keep app alive on Railway
+app.get('/', (req, res) => {
+  res.send('SurroundUvibe backend is running ✅');
+});
+
+// Handle audio upload
 app.post('/upload', upload.single('audio'), (req, res) => {
   const filePath = '/uploads/' + req.file.filename;
   res.json({ filename: filePath });
 });
 
-// ======================
-// SOCKET.IO
-// ======================
-
+// =============== SOCKET.IO ===============
 const users = {}; // socket.id → { name }
 
 io.on('connection', (socket) => {
@@ -73,7 +80,6 @@ io.on('connection', (socket) => {
     socket.broadcast.emit("volume", value);
   });
 
-  // HOST CONTROLS
   socket.on("host-mute", (id) => {
     io.to(id).emit("mute");
   });
@@ -99,6 +105,8 @@ io.on('connection', (socket) => {
   }
 });
 
-server.listen(3000, () => {
-  console.log("🚀 Server running at http://localhost:3000");
+// ✅ Use dynamic port on Railway
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
 });

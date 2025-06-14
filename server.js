@@ -1,11 +1,19 @@
 const express = require('express');
+const cors = require('cors'); // ✅ ADD THIS
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "https://surrounduvibe.web.app", // ✅ ALLOW your Firebase frontend
+    methods: ["GET", "POST"]
+  }
+});
+
+app.use(cors({ origin: "https://surrounduvibe.web.app" })); // ✅ HTTP route support too
 
 // Create upload directory if not exists
 const uploadDir = path.join(__dirname, 'uploads');
